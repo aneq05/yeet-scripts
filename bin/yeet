@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+
+YEET_ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
+export YEET_ROOT
+
+# shellcheck source=../lib/core.sh
+source "$YEET_ROOT/lib/core.sh"
+
+main() {
+  if (($# == 0)); then
+    yeet_usage
+    exit 0
+  fi
+
+  case "${1:-}" in
+    -h|--help|help)
+      yeet_usage
+      exit 0
+      ;;
+    modules)
+      yeet_list_modules
+      exit 0
+      ;;
+  esac
+
+  local project="" module=""
+
+  if yeet_module_exists "$1"; then
+    module="$1"
+    shift
+  else
+    project="$1"
+    shift
+    (($# > 0)) || yeet_die "Missing module. Try: yeet $project build app"
+    module="$1"
+    shift
+    yeet_load_project "$project"
+  fi
+
+  yeet_module_exists "$module" || yeet_die "Unknown module: $module"
+  # shellcheck source=/dev/null
+  source "$YEET_ROOT/modules/$module/module.sh"
+
+  local entrypoint="yeet_${module//-/_}_main"
+  declare -F "$entrypoint" >/dev/null || yeet_die "Module $module has no $entrypoint entrypoint"
+  "$entrypoint" "$@"
+}
+
+main "$@"
