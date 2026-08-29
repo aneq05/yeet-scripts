@@ -2,7 +2,17 @@
 
 yeet_fix_main() {
   local target="${1:-}"
-  [ -n "$target" ] || yeet_die "Usage: yeet <project> fix <whitespaces>"
+  if yeet_is_help_request "$target" || [ -z "$target" ]; then
+    cat <<'EOF'
+Usage:
+  yeet <project> fix <whitespaces> [paths...]
+
+Example:
+  yeet my-app fix whitespaces src tests
+EOF
+    [ -n "$target" ]
+    return
+  fi
   shift || true
 
   case "$target" in
@@ -24,9 +34,8 @@ yeet_fix_whitespaces() {
   (
     cd "$root"
     while IFS= read -r -d '' file; do
-      case "$file" in
-        */.git/*|*/node_modules/*|*/build/*|*/dist/*) continue ;;
-      esac
+      yeet_should_skip_path "$file" && continue
+      yeet_is_text_file "$file" || continue
       perl -0pi -e 's/[ \t]+(\r?\n)/$1/g' "$file"
     done < <(find "${paths[@]}" -type f -print0)
   )

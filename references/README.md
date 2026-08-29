@@ -1,7 +1,7 @@
-# References
+# Local References
 
-This folder stores the Messenger photos used as a visual reference for the
-first `yeet-scripts` scaffold.
+This folder can be used for local reference material while designing new
+modules or documenting old workflows.
 
-The original photos are intentionally ignored by Git so the repository can stay
-focused on the actual scripts and documentation.
+Image files are intentionally ignored by Git so the repository stays focused on
+scripts, configuration, and documentation.

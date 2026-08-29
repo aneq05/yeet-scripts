@@ -29,6 +29,13 @@ Examples:
 EOF
 }
 
+yeet_is_help_request() {
+  case "${1:-}" in
+    -h|--help|help) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 yeet_list_modules() {
   local module_file module
   for module_file in "$YEET_ROOT"/modules/*/module.sh; do
@@ -44,6 +51,25 @@ yeet_module_exists() {
 
 yeet_upper_key() {
   printf '%s' "$1" | tr '[:lower:]-' '[:upper:]_'
+}
+
+yeet_should_skip_path() {
+  case "$1" in
+    ./.git/*|*/.git/*|\
+    ./node_modules/*|*/node_modules/*|\
+    ./build/*|*/build/*|\
+    ./dist/*|*/dist/*|\
+    ./.yeet/*|*/.yeet/*)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+yeet_is_text_file() {
+  grep -Iq . "$1" 2>/dev/null
 }
 
 yeet_load_project() {

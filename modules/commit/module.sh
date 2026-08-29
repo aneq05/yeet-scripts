@@ -4,6 +4,9 @@ yeet_commit_main() {
   local command="${1:-format}"
 
   case "$command" in
+    -h|--help|help)
+      yeet_commit_usage
+      ;;
     format)
       shift || true
       yeet_commit_format "$@"
@@ -15,6 +18,18 @@ yeet_commit_main() {
       yeet_die "Usage: yeet commit format [type] [scope] <message...>"
       ;;
   esac
+}
+
+yeet_commit_usage() {
+  cat <<'EOF'
+Usage:
+  yeet commit format [type] [scope] <message...>
+  yeet commit types
+
+Examples:
+  yeet commit format feat auth add login validation
+  yeet commit format fix cli handle missing project config
+EOF
 }
 
 yeet_commit_format() {

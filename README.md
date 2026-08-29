@@ -16,6 +16,14 @@ yeet my-app coverage
 yeet commit format feat auth add login validation
 ```
 
+## Requirements
+
+- Bash 4+
+- Standard Unix tools: `find`, `grep`, `sed`, `perl`, `mktemp`, `tee`
+- Optional: `npx` for the default `jscpd` fallback
+
+On Windows, run `yeet` from Git Bash, WSL, or another Bash-compatible shell.
+
 ## Layout
 
 ```text
@@ -24,31 +32,41 @@ lib/core.sh               shared shell helpers
 modules/<name>/module.sh  module entrypoints
 projects/<project>.env    project commands and paths
 howto/                    notes for extending yeet
-references/               source photos and visual references
+references/               local reference materials
+```
+
+## Installation
+
+Clone the repository and add `bin` to your `PATH`:
+
+```bash
+git clone https://github.com/aneq05/yeet-scripts.git
+cd yeet-scripts
+export PATH="$PWD/bin:$PATH"
+```
+
+You can also call the script directly:
+
+```bash
+./bin/yeet --help
 ```
 
 ## Quick Start
 
-1. Add `bin` to your `PATH`, or call the script directly:
+Create a project config:
 
-   ```bash
-   ./bin/yeet --help
-   ```
+```bash
+cp projects/example.env projects/my-app.env
+```
 
-2. Create a project config:
+Edit `YEET_PROJECT_ROOT` and command variables in `projects/my-app.env`.
 
-   ```bash
-   cp projects/example.env projects/my-app.env
-   ```
+Then run:
 
-3. Edit `YEET_PROJECT_ROOT` and command variables in `projects/my-app.env`.
-
-4. Run:
-
-   ```bash
-   ./bin/yeet my-app build app
-   ./bin/yeet my-app run ut
-   ```
+```bash
+yeet my-app build app
+yeet my-app run ut
+```
 
 ## Project Config
 
@@ -73,3 +91,65 @@ YEET_COVERAGE_<target>
 
 Hyphens in command names become underscores, so `build admin-api` reads
 `YEET_BUILD_ADMIN_API`.
+
+## Built-In Modules
+
+List available modules:
+
+```bash
+yeet modules
+```
+
+Run configured build and test commands:
+
+```bash
+yeet my-app build app
+yeet my-app run ut
+```
+
+Run quality checks:
+
+```bash
+yeet my-app check cpd
+yeet my-app check whitespaces src tests
+```
+
+Fix trailing whitespace in text files:
+
+```bash
+yeet my-app fix whitespaces src tests
+```
+
+Run configured coverage jobs:
+
+```bash
+yeet my-app coverage
+yeet my-app coverage ut
+```
+
+Format commit messages:
+
+```bash
+yeet commit format feat auth add login validation
+yeet commit format fix cli handle missing project config
+```
+
+## Self-Check
+
+This repository includes a `yeet` project config for smoke testing:
+
+```bash
+yeet yeet build app
+yeet yeet run ut
+yeet yeet check whitespaces bin lib modules projects howto README.md references/README.md
+```
+
+## Extending
+
+Add a new module under `modules/<name>/module.sh` and expose a
+`yeet_<name>_main` function. See `howto/02-add-module.md` for a minimal
+example.
+
+## License
+
+MIT

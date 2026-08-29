@@ -3,7 +3,12 @@ set -euo pipefail
 
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 
-YEET_ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
+yeet_source="${BASH_SOURCE[0]}"
+if [[ "$yeet_source" != */* ]]; then
+  yeet_source="$(command -v -- "$yeet_source")"
+fi
+
+YEET_ROOT="$(cd "$(dirname "$yeet_source")/.." && pwd)"
 export YEET_ROOT
 
 # shellcheck source=../lib/core.sh
