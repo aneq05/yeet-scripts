@@ -40,7 +40,6 @@ ci/                       CI/CD setup notes
 .github/workflows/        GitHub Actions quality workflow
 howto/                    notes for extending yeet
 examples/                 small projects for manual testing
-references/               local reference materials
 ```
 
 ## Installation
@@ -159,7 +158,7 @@ This repository includes a `yeet` project config for smoke testing:
 ```bash
 yeet yeet build app
 yeet yeet run ut
-yeet yeet check whitespaces bin lib modules projects howto README.md references/README.md
+yeet yeet check whitespaces bin lib modules projects howto README.md
 ```
 
 ## C++ Calculator Demo
