@@ -48,6 +48,7 @@ yeet_check_whitespaces() {
     cd "$root"
     local found=0 lines_file
     lines_file="$(mktemp)"
+    yeet_require_existing_paths "${paths[@]}"
     while IFS= read -r -d '' file; do
       yeet_should_skip_path "$file" && continue
       yeet_is_text_file "$file" || continue

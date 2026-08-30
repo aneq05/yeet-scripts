@@ -1,3 +1,8 @@
 .yeet/
 references/*.jpg
 !references/README.md
+examples/cpp-calculator/build/
+examples/cpp-calculator/coverage/
+examples/cpp-calculator/*.gcda
+examples/cpp-calculator/*.gcno
+examples/cpp-calculator/*.gcov

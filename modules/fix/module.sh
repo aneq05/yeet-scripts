@@ -33,6 +33,7 @@ yeet_fix_whitespaces() {
   yeet_note "fix whitespaces"
   (
     cd "$root"
+    yeet_require_existing_paths "${paths[@]}"
     while IFS= read -r -d '' file; do
       yeet_should_skip_path "$file" && continue
       yeet_is_text_file "$file" || continue

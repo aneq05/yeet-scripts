@@ -4,6 +4,11 @@
 It keeps project-specific commands in `projects/*.env` and reusable tooling in
 folder-based modules.
 
+`yeet` is language-agnostic. It does not care whether a project is written in
+C++, Python, JavaScript, Rust, or something else. Project configs decide what
+`build`, `run`, `coverage`, or `check` actually execute. The bundled C++
+calculator is only a practical demo project.
+
 The intended daily shape is:
 
 ```bash
@@ -32,6 +37,7 @@ lib/core.sh               shared shell helpers
 modules/<name>/module.sh  module entrypoints
 projects/<project>.env    project commands and paths
 howto/                    notes for extending yeet
+examples/                 small projects for manual testing
 references/               local reference materials
 ```
 
@@ -78,6 +84,16 @@ YEET_BUILD_APP="cmake --build build"
 YEET_RUN_UT="ctest --test-dir build --output-on-failure"
 YEET_CPD="npx --yes jscpd ."
 YEET_COVERAGE="gcovr --xml coverage.xml --html-details coverage.html"
+```
+
+For a Python project, the same command shape could point at Python tooling:
+
+```bash
+YEET_PROJECT_ROOT="$HOME/projects/python-app"
+YEET_BUILD_APP="python -m compileall src tests"
+YEET_RUN_UT="pytest"
+YEET_COVERAGE="pytest --cov=src --cov-report=term-missing"
+YEET_CPD="npx --yes jscpd src tests"
 ```
 
 Command variables follow the module naming convention:
@@ -144,12 +160,42 @@ yeet yeet run ut
 yeet yeet check whitespaces bin lib modules projects howto README.md references/README.md
 ```
 
+## C++ Calculator Demo
+
+The repository includes a tiny C++ calculator project that can be used to test
+the tooling end to end after cloning. It uses plain C++ assertions and shell
+scripts, so no test framework is required.
+
+```bash
+yeet calculator build app
+yeet calculator run ut
+yeet calculator check cpd
+yeet calculator coverage
+yeet calculator check whitespaces .
+```
+
+The calculator config lives in `projects/calculator.env`, and the demo project
+lives in `examples/cpp-calculator`.
+
+To see whitespace detection fail, add trailing spaces to
+`examples/cpp-calculator/src/calculator.cpp`, then run the checks from the repository
+root. Paths passed to project modules are resolved from `YEET_PROJECT_ROOT`,
+so `src` means `examples/cpp-calculator/src` for the `calculator` project.
+
+```bash
+yeet calculator check whitespaces src
+yeet calculator fix whitespaces src
+yeet calculator check whitespaces src
+```
+
+Commit message formatting does not require a project:
+
+```bash
+yeet commit format feat demo add calculator project smoke test
+```
+
 ## Extending
 
 Add a new module under `modules/<name>/module.sh` and expose a
 `yeet_<name>_main` function. See `howto/02-add-module.md` for a minimal
 example.
-
-## License
-
-MIT

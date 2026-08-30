@@ -72,6 +72,13 @@ yeet_is_text_file() {
   grep -Iq . "$1" 2>/dev/null
 }
 
+yeet_require_existing_paths() {
+  local path
+  for path in "$@"; do
+    [ -e "$path" ] || yeet_die "Path does not exist: $path"
+  done
+}
+
 yeet_load_project() {
   local project="$1"
   local project_file="$YEET_ROOT/projects/$project.env"
