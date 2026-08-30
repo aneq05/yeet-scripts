@@ -36,6 +36,8 @@ bin/yeet                  main dispatcher
 lib/core.sh               shared shell helpers
 modules/<name>/module.sh  module entrypoints
 projects/<project>.env    project commands and paths
+ci/                       CI/CD setup notes
+.github/workflows/        GitHub Actions quality workflow
 howto/                    notes for extending yeet
 examples/                 small projects for manual testing
 references/               local reference materials
@@ -173,6 +175,19 @@ yeet calculator check cpd
 yeet calculator coverage
 yeet calculator check whitespaces .
 ```
+
+The repository includes a GitHub Actions workflow at
+.github/workflows/quality.yml. It runs on every push and pull request and
+checks whitespace, duplicated code, build status, unit tests, and coverage.
+The calculator demo enforces a minimum line coverage of 90%.
+
+The CI setup is language-agnostic: yeet only dispatches configured commands.
+For Python, JavaScript, Rust, or another language, add a project config and
+point YEET_BUILD_APP, YEET_RUN_UT, YEET_CPD, and YEET_COVERAGE at the
+appropriate commands. Coverage thresholds should be enforced by the selected
+coverage tool, for example pytest --cov=src --cov-fail-under=90.
+
+See ci/README.md for the CI configuration contract and examples.
 
 The calculator config lives in `projects/calculator.env`, and the demo project
 lives in `examples/cpp-calculator`.

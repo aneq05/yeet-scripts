@@ -1,0 +1,45 @@
+name: Yeet quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Build, tests and quality checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check shell scripts and documentation whitespace
+        run: |
+          bash ./bin/yeet yeet check whitespaces \
+            bin lib modules projects howto ci .github README.md
+
+      - name: Check calculator whitespace
+        run: bash ./bin/yeet calculator check whitespaces .
+
+      - name: Check duplicated code
+        run: bash ./bin/yeet calculator check cpd
+
+      - name: Build calculator
+        run: bash ./bin/yeet calculator build app
+
+      - name: Run unit tests
+        run: bash ./bin/yeet calculator run ut
+
+      - name: Check test coverage
+        run: bash ./bin/yeet calculator coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calculator-coverage
+          path: examples/cpp-calculator/coverage/
+          if-no-files-found: ignore
